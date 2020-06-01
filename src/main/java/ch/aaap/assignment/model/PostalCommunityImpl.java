@@ -10,5 +10,6 @@ public class PostalCommunityImpl implements PostalCommunity {
     String zipCode;
     String zipCodeAddition;
     String name;
+    String politicalCommunityNumber;
 
 }

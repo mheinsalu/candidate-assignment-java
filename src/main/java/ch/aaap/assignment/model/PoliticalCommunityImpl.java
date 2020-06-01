@@ -13,5 +13,7 @@ public class PoliticalCommunityImpl implements PoliticalCommunity {
     String name;
     String shortName;
     LocalDate lastUpdate;
+    String cantonCode;
+    String districtName;
 
 }

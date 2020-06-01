@@ -7,4 +7,5 @@ public interface District {
   public String getName();
 
   // TODO add more features here representing the relations
+
 }

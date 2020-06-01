@@ -6,20 +6,23 @@ import ch.aaap.assignment.raw.CSVPostalCommunity;
 
 public class CsvConverterUtil {
 
-    public static PoliticalCommunity convertCSVPoliticalCommunityToPoliticalCommunity(CSVPoliticalCommunity csvPoliticalCommunity) {
+    public static PoliticalCommunity getPoliticalCommunityFromCSVPoliticalCommunity(CSVPoliticalCommunity csvPoliticalCommunity) {
         return PoliticalCommunityImpl.builder()
                 .number(csvPoliticalCommunity.getNumber())
                 .name(csvPoliticalCommunity.getName())
                 .shortName(csvPoliticalCommunity.getShortName())
                 .lastUpdate(csvPoliticalCommunity.getLastUpdate())
+                .cantonCode(csvPoliticalCommunity.getCantonCode())
+                .districtName(csvPoliticalCommunity.getDistrictName())
                 .build();
     }
 
-    public static PostalCommunity convertCSVPostalCommunityToPostalCommunity(CSVPostalCommunity csvPostalCommunityCommunity) {
+    public static PostalCommunity getPostalCommunityFromCSVPostalCommunity(CSVPostalCommunity csvPostalCommunityCommunity) {
         return PostalCommunityImpl.builder()
                 .zipCode(csvPostalCommunityCommunity.getZipCode())
                 .zipCodeAddition(csvPostalCommunityCommunity.getZipCodeAddition())
                 .name(csvPostalCommunityCommunity.getName())
+                .politicalCommunityNumber(csvPostalCommunityCommunity.getPoliticalCommunityNumber())
                 .build();
     }
 
