@@ -127,10 +127,14 @@ public class Application {
                 .collect(Collectors.toList());
         if (districts.size() > 0) {
             String districtName = districts.get(0).getName();
-            return getModel().getPoliticalCommunities()
+            long count = getModel().getPoliticalCommunities()
                     .stream()
                     .filter(politicalCommunity -> politicalCommunity.getDistrictName().equalsIgnoreCase(districtName))
                     .count();
+            if (count > 0) {
+                return count;
+            }
+            throw new IllegalArgumentException("Found 0 political communities with district name " + districtNumber);
         }
         throw new IllegalArgumentException("Found 0 districts with district number " + districtNumber);
     }
@@ -167,12 +171,9 @@ public class Application {
             if (politicalCommunities.size() > 0) {
                 return politicalCommunities.get(0).getLastUpdate();
             }
-            System.out.println("Found 0 political communities with number " + targetPoliticalCommunityNumber);
-            return null;
+            throw new IllegalArgumentException("Found 0 political communities with political community number " + targetPoliticalCommunityNumber);
         }
-        System.out.println("Found 0 postal communities with name " + postalCommunityName);
-        return null;
-
+        throw new IllegalArgumentException("Found 0 postal communities with postal community name " + postalCommunityName);
     }
 
     /**
@@ -199,6 +200,10 @@ public class Application {
                 .map(PoliticalCommunity::getNumber)
                 .collect(Collectors.toSet());
         politicalCommunitiesPoliticalCommunityNumbers.removeAll(postalCommunitiesPoliticalCommunityNumbers);
-        return politicalCommunitiesPoliticalCommunityNumbers.size();
+        long count = politicalCommunitiesPoliticalCommunityNumbers.size();
+        if (count > 0) {
+            return count;
+        }
+        throw new IllegalArgumentException("Found 0 political communities without postal communities");
     }
 }
