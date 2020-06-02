@@ -13,7 +13,7 @@ public class CsvConverterUtil {
                 .shortName(csvPoliticalCommunity.getShortName())
                 .lastUpdate(csvPoliticalCommunity.getLastUpdate())
                 .cantonCode(csvPoliticalCommunity.getCantonCode())
-                .districtName(csvPoliticalCommunity.getDistrictName())
+                .districtNumber(csvPoliticalCommunity.getDistrictNumber())
                 .build();
     }
 

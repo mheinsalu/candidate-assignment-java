@@ -26,11 +26,6 @@ public class ModelImpl implements Model {
                 .collect(Collectors.toList());
     }
 
-    public List<PostalCommunity> getPostalCommunitiesByName(String targetNumber) {
-        return getPostalCommunities()
-                .stream()
-                .filter(politicalCommunity -> politicalCommunity.getName().equalsIgnoreCase(targetNumber))
-                .collect(Collectors.toList());
-    }
+
 
 }

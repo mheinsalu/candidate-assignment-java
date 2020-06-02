@@ -14,7 +14,7 @@ public interface PoliticalCommunity {
 
   // TODO add more features here representing the relations
 
-  public String getDistrictName();
+  public String getDistrictNumber();
 
   public String getCantonCode();
 

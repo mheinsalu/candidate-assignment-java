@@ -13,7 +13,4 @@ public interface Model {
 
     public Set<District> getDistricts();
 
-    public List<PoliticalCommunity> getPoliticalCommunitiesByNumber(String targetNumber);
-
-    public List<PostalCommunity> getPostalCommunitiesByName(String targetNumber);
 }

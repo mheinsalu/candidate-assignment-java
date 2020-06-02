@@ -4,15 +4,11 @@ import ch.aaap.assignment.model.*;
 import ch.aaap.assignment.raw.CSVPoliticalCommunity;
 import ch.aaap.assignment.raw.CSVPostalCommunity;
 import ch.aaap.assignment.raw.CSVUtil;
-import ch.aaap.assignment.util.CsvConverterUtil;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Application {
 
@@ -44,7 +40,7 @@ public class Application {
                                 .shortName(csvPoliticalCommunity.getShortName())
                                 .number(csvPoliticalCommunity.getNumber())
                                 .lastUpdate(csvPoliticalCommunity.getLastUpdate())
-                                .districtName(csvPoliticalCommunity.getDistrictName())
+                                .districtNumber(csvPoliticalCommunity.getDistrictNumber())
                                 .cantonCode(csvPoliticalCommunity.getCantonCode())
                                 .build())
                 .collect(Collectors.toSet());
@@ -72,6 +68,7 @@ public class Application {
                         DistrictImpl.builder()
                                 .name(csvPoliticalCommunity.getDistrictName())
                                 .number(csvPoliticalCommunity.getDistrictNumber())
+                                .cantonCode(csvPoliticalCommunity.getCantonCode())
                                 .build())
                 .collect(Collectors.toSet());
         model = new ModelImpl(politicalCommunitySet, postalCommunitySet, cantonSet, districtSet);
@@ -104,12 +101,16 @@ public class Application {
      * @return amount of districts in given canton
      */
     public long getAmountOfDistrictsInCanton(String cantonCode) {
-        long count = getModel().getPoliticalCommunities()
+        int count = getModel().getDistricts()
+                .stream()
+                .filter(district -> district.getCantonCode().equalsIgnoreCase(cantonCode))
+                .collect(Collectors.toSet()).size();
+        /*long count = getModel().getPoliticalCommunities()
                 .stream()
                 .filter(politicalCommunity -> politicalCommunity.getCantonCode().equalsIgnoreCase(cantonCode))
-                .map(PoliticalCommunity::getDistrictName)
+                .map(PoliticalCommunity::getDistrictNumber)
                 .collect(Collectors.toSet())
-                .size();
+                .size();*/
         if (count > 0) {
             return count;
         }
@@ -118,10 +119,18 @@ public class Application {
 
     /**
      * @param districtNumber of a district (e.g. 101)
-     * @return amount of districts in given canton
+     * @return amount of political communities in given district
      */
     public long getAmountOfPoliticalCommunitiesInDistrict(String districtNumber) {
-        List<District> districts = getModel().getDistricts()
+        long count = getModel().getPoliticalCommunities()
+                .stream()
+                .filter(politicalCommunity -> politicalCommunity.getDistrictNumber().equalsIgnoreCase(districtNumber))
+                .count();
+        if (count > 0) {
+            return count;
+        }
+        throw new IllegalArgumentException("Found 0 political communities in district with name " + districtNumber);
+/*        List<District> districts = getModel().getDistricts()
                 .stream()
                 .filter(district -> district.getNumber().equalsIgnoreCase(districtNumber))
                 .collect(Collectors.toList());
@@ -136,7 +145,7 @@ public class Application {
             }
             throw new IllegalArgumentException("Found 0 political communities with district name " + districtNumber);
         }
-        throw new IllegalArgumentException("Found 0 districts with district number " + districtNumber);
+        throw new IllegalArgumentException("Found 0 districts with district number " + districtNumber);*/
     }
 
     /**
@@ -152,10 +161,15 @@ public class Application {
                 .stream()
                 .map(PostalCommunity::getPoliticalCommunityNumber)
                 .collect(Collectors.toSet());
-        return getModel().getPoliticalCommunities()
+        Set<String> districtNumbers = getModel().getPoliticalCommunities()
                 .stream()
                 .filter(politicalCommunity -> politicalCommunityNumbersWithZipCode.contains(politicalCommunity.getNumber()))
-                .map(PoliticalCommunity::getDistrictName)
+                .map(PoliticalCommunity::getDistrictNumber)
+                .collect(Collectors.toSet());
+        return getModel().getDistricts()
+                .stream()
+                .filter(district -> districtNumbers.contains(district.getNumber()))
+                .map(District::getName)
                 .collect(Collectors.toSet());
     }
 
@@ -164,7 +178,26 @@ public class Application {
      * @return lastUpdate of the political community by a given postal community name
      */
     public LocalDate getLastUpdateOfPoliticalCommunityByPostalCommunityName(String postalCommunityName) {
-        List<PostalCommunity> postalCommunitiesWithGivenName = getModel().getPostalCommunitiesByName(postalCommunityName);
+        List<PostalCommunity> postalCommunitiesWithTargetName = getModel().getPostalCommunities()
+                .stream()
+                .filter(postalCommunity -> postalCommunity.getName().equalsIgnoreCase(postalCommunityName))
+                .collect(Collectors.toList());
+        if (postalCommunitiesWithTargetName.size() > 0) { // TODO: think about this method. post to pol bijection?
+            String politicalCommunityNumber = postalCommunitiesWithTargetName.get(0).getPoliticalCommunityNumber();
+            List<PoliticalCommunity> politicalCommunities = getModel().getPoliticalCommunities()
+                    .stream()
+                    .filter(politicalCommunity -> politicalCommunity.getNumber().equalsIgnoreCase(politicalCommunityNumber))
+                    .collect(Collectors.toList());
+            if (politicalCommunities.size() > 0) {
+                return politicalCommunities.get(0).getLastUpdate();
+            }
+            throw new IllegalArgumentException("Found 0 political communities with political community number " + politicalCommunityNumber);
+        }
+        throw new IllegalArgumentException("Found 0 postal communities with postal community name " + postalCommunityName);
+     /*   List<PostalCommunity> postalCommunitiesWithGivenName = getModel().getPostalCommunities()
+                .stream()
+                .filter(politicalCommunity -> politicalCommunity.getName().equalsIgnoreCase(postalCommunityName))
+                .collect(Collectors.toList());
         if (postalCommunitiesWithGivenName.size() > 0) {
             String targetPoliticalCommunityNumber = postalCommunitiesWithGivenName.get(0).getPoliticalCommunityNumber();
             List<PoliticalCommunity> politicalCommunities = getModel().getPoliticalCommunitiesByNumber(targetPoliticalCommunityNumber);
@@ -173,7 +206,7 @@ public class Application {
             }
             throw new IllegalArgumentException("Found 0 political communities with political community number " + targetPoliticalCommunityNumber);
         }
-        throw new IllegalArgumentException("Found 0 postal communities with postal community name " + postalCommunityName);
+        throw new IllegalArgumentException("Found 0 postal communities with postal community name " + postalCommunityName);*/
     }
 
     /**

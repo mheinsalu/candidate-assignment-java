@@ -11,5 +11,4 @@ public interface PostalCommunity {
   // TODO add more features here representing the relations
 
   public String getPoliticalCommunityNumber();
-
 }

@@ -2,13 +2,18 @@ package ch.aaap.assignment.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 
 @Data
 @Builder
 public class DistrictImpl implements District {
 
+    @NonNull
     String number;
+    @NonNull
     String name;
+
+    String cantonCode;
 
     @Override
     public boolean equals(Object object) {
@@ -17,6 +22,14 @@ public class DistrictImpl implements District {
 
         DistrictImpl district = (DistrictImpl) object;
 
-        return number.equals(district.number);
+        if (!number.equals(district.number)) return false;
+        return name.equals(district.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = number.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
     }
 }
