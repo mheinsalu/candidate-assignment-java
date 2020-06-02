@@ -11,22 +11,22 @@ import java.time.LocalDate;
 public class PoliticalCommunityImpl implements PoliticalCommunity {
 
     @NonNull
-    String number;
+    private  String number;
     @NonNull
-    String name;
-    String shortName;
-    LocalDate lastUpdate;
+    private  String name;
+    private  String shortName;
+    private  LocalDate lastUpdate;
 
-    String cantonCode;
-    String districtNumber;
+    private   String cantonCode;
+    private   String districtNumber;
 
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
 
-        PoliticalCommunityImpl that = (PoliticalCommunityImpl) o;
+        PoliticalCommunityImpl that = (PoliticalCommunityImpl) object;
 
         return number.equals(that.number);
     }

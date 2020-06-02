@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ModelImpl implements Model {
 
-    Set<PoliticalCommunity> politicalCommunities;
-    Set<PostalCommunity> postalCommunities;
-    Set<Canton> cantons;
-    Set<District> districts;
+    private  Set<PoliticalCommunity> politicalCommunities;
+    private  Set<PostalCommunity> postalCommunities;
+    private  Set<Canton> cantons;
+    private  Set<District> districts;
 
     public List<PoliticalCommunity> getPoliticalCommunitiesByNumber(String targetNumber) {
         return getPoliticalCommunities()

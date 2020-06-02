@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 
 public class Application {
 
-    // TODO: !! guugelda ja leia size relations-id
-
     private Model model = null;
 
     public Application() {
@@ -105,12 +103,6 @@ public class Application {
                 .stream()
                 .filter(district -> district.getCantonCode().equalsIgnoreCase(cantonCode))
                 .collect(Collectors.toSet()).size();
-        /*long count = getModel().getPoliticalCommunities()
-                .stream()
-                .filter(politicalCommunity -> politicalCommunity.getCantonCode().equalsIgnoreCase(cantonCode))
-                .map(PoliticalCommunity::getDistrictNumber)
-                .collect(Collectors.toSet())
-                .size();*/
         if (count > 0) {
             return count;
         }
@@ -130,47 +122,28 @@ public class Application {
             return count;
         }
         throw new IllegalArgumentException("Found 0 political communities in district with name " + districtNumber);
-/*        List<District> districts = getModel().getDistricts()
-                .stream()
-                .filter(district -> district.getNumber().equalsIgnoreCase(districtNumber))
-                .collect(Collectors.toList());
-        if (districts.size() > 0) {
-            String districtName = districts.get(0).getName();
-            long count = getModel().getPoliticalCommunities()
-                    .stream()
-                    .filter(politicalCommunity -> politicalCommunity.getDistrictName().equalsIgnoreCase(districtName))
-                    .count();
-            if (count > 0) {
-                return count;
-            }
-            throw new IllegalArgumentException("Found 0 political communities with district name " + districtNumber);
-        }
-        throw new IllegalArgumentException("Found 0 districts with district number " + districtNumber);*/
     }
 
     /**
      * @param zipCode 4 digit zip code
-     * @return district that belongs to specified zip code
+     * @return district names that belong to specified zip code
      */
     public Set<String> getDistrictsForZipCode(String zipCode) {
-        Set<PostalCommunity> postalCommunitiesWithZipCode = getModel().getPostalCommunities()
+        Set<String> politicalCommunityNumbersInZipCode = getModel().getPostalCommunities()
                 .stream()
                 .filter(postalCommunity -> postalCommunity.getZipCode().equalsIgnoreCase(zipCode))
-                .collect(Collectors.toSet());
-        Set<String> politicalCommunityNumbersWithZipCode = postalCommunitiesWithZipCode
-                .stream()
                 .map(PostalCommunity::getPoliticalCommunityNumber)
                 .collect(Collectors.toSet());
         Set<String> districtNumbers = getModel().getPoliticalCommunities()
                 .stream()
-                .filter(politicalCommunity -> politicalCommunityNumbersWithZipCode.contains(politicalCommunity.getNumber()))
+                .filter(politicalCommunity -> politicalCommunityNumbersInZipCode.contains(politicalCommunity.getNumber()))
                 .map(PoliticalCommunity::getDistrictNumber)
                 .collect(Collectors.toSet());
         return getModel().getDistricts()
                 .stream()
                 .filter(district -> districtNumbers.contains(district.getNumber()))
                 .map(District::getName)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()); // TODO: new method districtNameFromDistrictNumber?
     }
 
     /**
@@ -182,7 +155,7 @@ public class Application {
                 .stream()
                 .filter(postalCommunity -> postalCommunity.getName().equalsIgnoreCase(postalCommunityName))
                 .collect(Collectors.toList());
-        if (postalCommunitiesWithTargetName.size() > 0) { // TODO: think about this method. post to pol bijection?
+        if (postalCommunitiesWithTargetName.size() > 0) { // TODO: think about this method. post to pol bijection? I can remove this if
             String politicalCommunityNumber = postalCommunitiesWithTargetName.get(0).getPoliticalCommunityNumber();
             List<PoliticalCommunity> politicalCommunities = getModel().getPoliticalCommunities()
                     .stream()
@@ -194,19 +167,6 @@ public class Application {
             throw new IllegalArgumentException("Found 0 political communities with political community number " + politicalCommunityNumber);
         }
         throw new IllegalArgumentException("Found 0 postal communities with postal community name " + postalCommunityName);
-     /*   List<PostalCommunity> postalCommunitiesWithGivenName = getModel().getPostalCommunities()
-                .stream()
-                .filter(politicalCommunity -> politicalCommunity.getName().equalsIgnoreCase(postalCommunityName))
-                .collect(Collectors.toList());
-        if (postalCommunitiesWithGivenName.size() > 0) {
-            String targetPoliticalCommunityNumber = postalCommunitiesWithGivenName.get(0).getPoliticalCommunityNumber();
-            List<PoliticalCommunity> politicalCommunities = getModel().getPoliticalCommunitiesByNumber(targetPoliticalCommunityNumber);
-            if (politicalCommunities.size() > 0) {
-                return politicalCommunities.get(0).getLastUpdate();
-            }
-            throw new IllegalArgumentException("Found 0 political communities with political community number " + targetPoliticalCommunityNumber);
-        }
-        throw new IllegalArgumentException("Found 0 postal communities with postal community name " + postalCommunityName);*/
     }
 
     /**
@@ -223,7 +183,7 @@ public class Application {
      *
      * @return amount of political communities without postal communities
      */
-    public long getAmountOfPoliticalCommunityWithoutPostalCommunities() {
+    public long getAmountOfPoliticalCommunityWithoutPostalCommunities() { // TODO: new method politicalNumberToPostalCommunity
         Set<String> postalCommunitiesPoliticalCommunityNumbers = getModel().getPostalCommunities()
                 .stream()
                 .map(PostalCommunity::getPoliticalCommunityNumber)

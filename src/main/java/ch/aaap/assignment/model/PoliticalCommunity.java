@@ -12,7 +12,6 @@ public interface PoliticalCommunity {
 
   public LocalDate getLastUpdate();
 
-  // TODO add more features here representing the relations
 
   public String getDistrictNumber();
 

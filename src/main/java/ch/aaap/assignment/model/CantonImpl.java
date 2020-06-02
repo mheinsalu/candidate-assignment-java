@@ -9,9 +9,8 @@ import lombok.NonNull;
 public class CantonImpl implements Canton {
 
     @NonNull
-    String code;
-    @NonNull
-    String name;
+    private String code;
+    private String name;
 
     @Override
     public boolean equals(Object object) {
@@ -20,14 +19,11 @@ public class CantonImpl implements Canton {
 
         CantonImpl canton = (CantonImpl) object;
 
-        if (!code.equals(canton.code)) return false;
-        return name.equals(canton.name);
+        return code.equals(canton.code);
     }
 
     @Override
     public int hashCode() {
-        int result = code.hashCode();
-        result = 31 * result + name.hashCode();
-        return result;
+        return code.hashCode();
     }
 }

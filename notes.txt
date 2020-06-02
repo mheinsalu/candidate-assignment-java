@@ -7,6 +7,8 @@ most but not all cantons are divided into districts
 postal community / zip code can include parts of multiple cantons and districts
 political communities are smallest administrative divisions in Switzerland
 
+if I add field Canton canton to District then methods are model initialization is more difficult but some other methods are easier
+
 possible test error:
 returnsCorrectDistrictNamesForZipCode -> assertEquals(2, sut.getDistrictsForZipCode("8866").size(), "Expected 2 results");
 The only way to tie these two data sets / raw classes together is through political community number.

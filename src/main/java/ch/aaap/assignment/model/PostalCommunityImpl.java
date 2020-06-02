@@ -8,16 +8,34 @@ import lombok.NonNull;
 @Builder
 public class PostalCommunityImpl implements PostalCommunity {
 
+    private  String name;
     @NonNull
-    String name;
+    private  String zipCode;
     @NonNull
-    String zipCode;
+    private  String zipCodeAddition;
     @NonNull
-    String zipCodeAddition;
-    @NonNull
-    String politicalCommunityNumber;
+    private   String politicalCommunityNumber;
+
+    // TODO: consider giving polCom a Set of Zips(cd and addCd). Would that result in passing returnsCorrectDistrictNamesForZipCode AND testModel?
+/*    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PostalCommunityImpl that = (PostalCommunityImpl) o;
+
+        if (!zipCode.equals(that.zipCode)) return false;
+        return zipCodeAddition.equals(that.zipCodeAddition);
+    }
 
     @Override
+    public int hashCode() {
+        int result = zipCode.hashCode();
+        result = 31 * result + zipCodeAddition.hashCode();
+        return result;
+    }*/
+
+        @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

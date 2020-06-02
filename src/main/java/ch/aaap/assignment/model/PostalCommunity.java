@@ -8,7 +8,6 @@ public interface PostalCommunity {
 
   public String getName();
 
-  // TODO add more features here representing the relations
 
   public String getPoliticalCommunityNumber();
 }
