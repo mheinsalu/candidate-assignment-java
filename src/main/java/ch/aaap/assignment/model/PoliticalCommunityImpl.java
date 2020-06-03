@@ -2,17 +2,17 @@ package ch.aaap.assignment.model;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
 @Builder
 public class PoliticalCommunityImpl implements PoliticalCommunity {
 
     @NonNull
     private  String number;
-    @NonNull
     private  String name;
     private  String shortName;
     private  LocalDate lastUpdate;

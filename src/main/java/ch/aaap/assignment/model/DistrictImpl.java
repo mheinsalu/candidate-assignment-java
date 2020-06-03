@@ -1,18 +1,18 @@
 package ch.aaap.assignment.model;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 
-@Data
+@Getter
 @Builder
 public class DistrictImpl implements District {
 
     @NonNull
-    private  String number;
-    private  String name;
+    private String number;
+    private String name;
 
-    private  String cantonCode;
+    private String cantonCode;
 
     @Override
     public boolean equals(Object object) {

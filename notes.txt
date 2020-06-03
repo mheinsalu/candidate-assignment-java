@@ -1,15 +1,21 @@
-unit tests expect IllegalArgumentException when method's result is 0 (no results found)
+Unit tests expect IllegalArgumentException when method's result is 0 (no results found).
 
-fixed some spelling errors in original method names
+General note: iteration can be faster than streams.
+Results of timing tests:
+    Building model sets from raw sets is takes the same amount of time with streams and with while/iterator and with forEach. Sometimes one option is faster, sometimes the other.
+    Building model sets from raw sets is takes the same amount of time whether I use two streams (one for postal and one for political) or four streams (one for each model set). Sometimes one option is faster, sometimes the other.
+    Therefore I decided to use four streams in ModelImpl constructor to improve readability
 
-cantons are largest administrative divisions on Switzerland
-most but not all cantons are divided into districts
-postal community / zip code can include parts of multiple cantons and districts
-political communities are smallest administrative divisions in Switzerland
+Fixed some spelling errors in original method names.
 
-if I add field Canton canton to District then methods are model initialization is more difficult but some other methods are easier
+Cantons are largest administrative divisions on Switzerland.
+Most but not all cantons are divided into districts.
+Postal community / zip code can include parts of multiple cantons and districts.
+Political communities are smallest administrative divisions in Switzerland.
 
-possible test error:
+Ff I add field Canton canton to District then model initialization is more difficult but some other methods are easier.
+
+Possible test error:
 returnsCorrectDistrictNamesForZipCode -> assertEquals(2, sut.getDistrictsForZipCode("8866").size(), "Expected 2 results");
 The only way to tie these two data sets / raw classes together is through political community number.
 getDistrictsForZipCode method takes a zip code as parameter.  The failing test is for code 8866.

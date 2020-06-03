@@ -1,20 +1,20 @@
 package ch.aaap.assignment.model;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 
-@Data
+@Getter
 @Builder
 public class PostalCommunityImpl implements PostalCommunity {
 
-    private  String name;
+    private String name;
     @NonNull
-    private  String zipCode;
+    private String zipCode;
     @NonNull
-    private  String zipCodeAddition;
+    private String zipCodeAddition;
     @NonNull
-    private   String politicalCommunityNumber;
+    private String politicalCommunityNumber;
 
     // TODO: consider giving polCom a Set of Zips(cd and addCd). Would that result in passing returnsCorrectDistrictNamesForZipCode AND testModel?
 /*    @Override
@@ -35,7 +35,7 @@ public class PostalCommunityImpl implements PostalCommunity {
         return result;
     }*/
 
-        @Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
