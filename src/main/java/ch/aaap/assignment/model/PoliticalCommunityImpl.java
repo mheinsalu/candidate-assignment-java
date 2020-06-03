@@ -1,25 +1,26 @@
 package ch.aaap.assignment.model;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
-
 import java.time.LocalDate;
 
+/**
+ * @author Märten Heinsalu
+ */
 @Getter
 @Builder
 public class PoliticalCommunityImpl implements PoliticalCommunity {
 
     @NonNull
-    private  String number;
-    private  String name;
-    private  String shortName;
-    private  LocalDate lastUpdate;
+    private String number;
 
-    private   String cantonCode;
-    private   String districtNumber;
+    private String name;
+    private String shortName;
+    private LocalDate lastUpdate;
 
+    private String cantonCode;
+    private String districtNumber;
 
     @Override
     public boolean equals(Object object) {

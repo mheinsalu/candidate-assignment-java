@@ -1,13 +1,16 @@
 package ch.aaap.assignment.model;
 
+import java.util.Set;
+
 public interface PostalCommunity {
 
-  public String getZipCode();
+    public String getZipCode();
 
-  public String getZipCodeAddition();
+    public String getZipCodeAddition();
 
-  public String getName();
+    public String getName();
 
+    public Set<String> getPoliticalCommunityNumbers();
 
-  public String getPoliticalCommunityNumber();
+    public void setPoliticalCommunityNumbers(Set<String> politicalCommunityNumbers);
 }

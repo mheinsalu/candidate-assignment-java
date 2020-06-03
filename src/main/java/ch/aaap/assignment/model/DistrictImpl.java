@@ -4,14 +4,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
+/**
+ * @author Märten Heinsalu
+ */
 @Getter
 @Builder
 public class DistrictImpl implements District {
 
     @NonNull
     private String number;
-    private String name;
 
+    private String name;
     private String cantonCode;
 
     @Override

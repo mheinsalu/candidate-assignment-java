@@ -4,17 +4,16 @@ import java.time.LocalDate;
 
 public interface PoliticalCommunity {
 
-  public String getNumber();
+    public String getNumber();
 
-  public String getName();
+    public String getName();
 
-  public String getShortName();
+    public String getShortName();
 
-  public LocalDate getLastUpdate();
+    public LocalDate getLastUpdate();
 
 
-  public String getDistrictNumber();
+    public String getDistrictNumber();
 
-  public String getCantonCode();
-
+    public String getCantonCode();
 }

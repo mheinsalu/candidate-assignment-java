@@ -1,15 +1,19 @@
 package ch.aaap.assignment;
 
-import ch.aaap.assignment.model.*;
+import ch.aaap.assignment.helper.ModelHelper;
+import ch.aaap.assignment.model.Model;
+import ch.aaap.assignment.model.ModelImpl;
+import ch.aaap.assignment.model.PoliticalCommunity;
+import ch.aaap.assignment.model.PostalCommunity;
 import ch.aaap.assignment.raw.CSVPoliticalCommunity;
 import ch.aaap.assignment.raw.CSVPostalCommunity;
 import ch.aaap.assignment.raw.CSVUtil;
-
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+/**
+ * @author Märten Heinsalu
+ */
 public class Application {
 
     private Model model = null;
@@ -59,10 +63,9 @@ public class Application {
      * @return amount of districts in given canton
      */
     public long getAmountOfDistrictsInCanton(String cantonCode) {
-        int count = model.getDistricts()
+        long count = model.getDistricts()
                 .stream()
-                .filter(district -> district.getCantonCode().equalsIgnoreCase(cantonCode))
-                .collect(Collectors.toSet()).size();
+                .filter(district -> district.getCantonCode().equalsIgnoreCase(cantonCode)).count();
         if (count > 0) {
             return count;
         }
@@ -89,44 +92,30 @@ public class Application {
      * @return district names that belong to specified zip code
      */
     public Set<String> getDistrictsForZipCode(String zipCode) {
-        Set<String> politicalCommunityNumbersInZipCode = model.getPostalCommunities()
-                .stream()
-                .filter(postalCommunity -> postalCommunity.getZipCode().equalsIgnoreCase(zipCode))
-                .map(PostalCommunity::getPoliticalCommunityNumber)
-                .collect(Collectors.toSet());
-        Set<String> districtNumbers = model.getPoliticalCommunities()
-                .stream()
-                .filter(politicalCommunity -> politicalCommunityNumbersInZipCode.contains(politicalCommunity.getNumber()))
-                .map(PoliticalCommunity::getDistrictNumber)
-                .collect(Collectors.toSet());
-        return model.getDistricts()
-                .stream()
-                .filter(district -> districtNumbers.contains(district.getNumber()))
-                .map(District::getName)
-                .collect(Collectors.toSet()); // TODO: new method districtNameFromDistrictNumber?
+        Set<String> politicalCommunityNumbersInZipCode = ModelHelper.getPoliticalCommunityNumbersInZipCode(model.getPostalCommunities(), zipCode);
+        Set<PoliticalCommunity> politicalCommunitiesInZipCode = ModelHelper
+                .getPoliticalCommunitiesMatchingSetOfPoliticalCommunityNumbers(model.getPoliticalCommunities(), politicalCommunityNumbersInZipCode);
+        Set<String> districtNumbers = ModelHelper.getDistrictNumbersOfPoliticalCommunities(politicalCommunitiesInZipCode);
+        return ModelHelper.getDistrictNamesFromDistrictNumbers(model.getDistricts(), districtNumbers);
     }
+
 
     /**
      * @param postalCommunityName name
      * @return lastUpdate of the political community by a given postal community name
      */
     public LocalDate getLastUpdateOfPoliticalCommunityByPostalCommunityName(String postalCommunityName) {
-        List<PostalCommunity> postalCommunitiesWithTargetName = model.getPostalCommunities()
-                .stream()
-                .filter(postalCommunity -> postalCommunity.getName().equalsIgnoreCase(postalCommunityName))
-                .collect(Collectors.toList());
-        if (postalCommunitiesWithTargetName.size() > 0) { // TODO: think about this method. post to pol bijection? I can remove this if
-            String politicalCommunityNumber = postalCommunitiesWithTargetName.get(0).getPoliticalCommunityNumber();
-            List<PoliticalCommunity> politicalCommunities = model.getPoliticalCommunities()
-                    .stream()
-                    .filter(politicalCommunity -> politicalCommunity.getNumber().equalsIgnoreCase(politicalCommunityNumber))
-                    .collect(Collectors.toList());
-            if (politicalCommunities.size() > 0) {
-                return politicalCommunities.get(0).getLastUpdate();
-            }
-            throw new IllegalArgumentException("Found 0 political communities with political community number " + politicalCommunityNumber);
+        Set<PostalCommunity> postalCommunitiesWithTargetName = ModelHelper.getPostalCommunitiesBasedOnName(model.getPostalCommunities(), postalCommunityName);
+        // getPostalCommunitiesBasedOnName throws IllegalArgumentException if none are found
+        PostalCommunity firstPostalCommunity = postalCommunitiesWithTargetName.iterator().next();
+        String firstPoliticalCommunityNumber;
+        if (firstPostalCommunity.getPoliticalCommunityNumbers().size() > 0) {
+            firstPoliticalCommunityNumber = firstPostalCommunity.getPoliticalCommunityNumbers().iterator().next();
+        } else {
+            throw new IllegalArgumentException("Found 0 political communities in  postal community with name " + postalCommunityName);
         }
-        throw new IllegalArgumentException("Found 0 postal communities with postal community name " + postalCommunityName);
+        PoliticalCommunity politicalCommunity = ModelHelper.getPoliticalCommunityFromNumber(model.getPoliticalCommunities(), firstPoliticalCommunityNumber);
+        return politicalCommunity.getLastUpdate();
     }
 
     /**
@@ -143,15 +132,9 @@ public class Application {
      *
      * @return amount of political communities without postal communities
      */
-    public long getAmountOfPoliticalCommunityWithoutPostalCommunities() { // TODO: new method politicalNumberToPostalCommunity
-        Set<String> postalCommunitiesPoliticalCommunityNumbers = model.getPostalCommunities()
-                .stream()
-                .map(PostalCommunity::getPoliticalCommunityNumber)
-                .collect(Collectors.toSet());
-        Set<String> politicalCommunitiesPoliticalCommunityNumbers = model.getPoliticalCommunities()
-                .stream()
-                .map(PoliticalCommunity::getNumber)
-                .collect(Collectors.toSet());
+    public long getAmountOfPoliticalCommunityWithoutPostalCommunities() {
+        Set<String> postalCommunitiesPoliticalCommunityNumbers = ModelHelper.getAllPoliticalCommunityNumbersFromPostalCommunities(model.getPostalCommunities());
+        Set<String> politicalCommunitiesPoliticalCommunityNumbers = ModelHelper.getAllPoliticalCommunityNumbersFromPoliticalCommunities(model.getPoliticalCommunities());
         politicalCommunitiesPoliticalCommunityNumbers.removeAll(postalCommunitiesPoliticalCommunityNumbers);
         long count = politicalCommunitiesPoliticalCommunityNumbers.size();
         if (count > 0) {

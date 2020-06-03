@@ -1,3 +1,7 @@
+/**
+ * @author Märten Heinsalu
+ */
+
 Unit tests expect IllegalArgumentException when method's result is 0 (no results found).
 
 General note: iteration can be faster than streams.
@@ -6,6 +10,9 @@ Results of timing tests:
     Building model sets from raw sets is takes the same amount of time whether I use two streams (one for postal and one for political) or four streams (one for each model set). Sometimes one option is faster, sometimes the other.
     Therefore I decided to use four streams in ModelImpl constructor to improve readability
 
+Methods of class ModelHelper could logically be methods of class Model. I put them in ModelHelper to reduce size of class Model.
+To reduce size of ModelHelper, its methods could be split by which class sets they take as parameters e.g. PoliticalCommunitySetHelper and PostalCommunitySetHelper.
+
 Fixed some spelling errors in original method names.
 
 Cantons are largest administrative divisions on Switzerland.
@@ -13,20 +20,9 @@ Most but not all cantons are divided into districts.
 Postal community / zip code can include parts of multiple cantons and districts.
 Political communities are smallest administrative divisions in Switzerland.
 
-Ff I add field Canton canton to District then model initialization is more difficult but some other methods are easier.
+If I add field Canton canton to District then model initialization is more difficult but some other methods are easier.
 
-Possible test error:
-returnsCorrectDistrictNamesForZipCode -> assertEquals(2, sut.getDistrictsForZipCode("8866").size(), "Expected 2 results");
-The only way to tie these two data sets / raw classes together is through political community number.
-getDistrictsForZipCode method takes a zip code as parameter.  The failing test is for code 8866.
-8866 corresponds to two entries in the initial postal communities data set / csv:
-    8866,0,Ziegelbrücke,1.6,GL,1630,Glarus Nord
-    8866,0,Ziegelbrücke,1.83,SG,3315,Schänis
-This means that zip code 8866 can be found in 2 districts.
-To get these two postal communities when searching by zip code, means that we must count them as two distinct postal communities.
-    This can't be done by zip code and zip code addition alone because using just these two parameters means that the communities are the same and one will be discarded from Set.
-    Therefore an additional parameter is needed to distinguish these two postal communities. We must use as this parameter political community  number.
-    However, the test
-    assertEquals(4064, sut.getModel().getPostalCommunities().size(), "Correct amount of postal communities");
-    requires that there be 4064 entries int the postal communities set. This is true only if postal communities are compared only by the parameters zip code and zip code addition.
-    Thus, these two unit tests' expected results are incompatible and can't be true at the same time.
+Static code check performed with SpotBugs.
+Style check performed against Google Style Guide for Java (https://google.github.io/styleguide/javaguide.html)
+
+There is a possible test problem in getLastUpdateOfPoliticalCommunityByPostalCommunityName. To have 4064 PostalCommunities as expected in method testModel(),  political community numbers and postal community names are not compared when comparing PostalCommunities. Only zip codes and zip code additions are compared. Therefore a postal  community name can match multiple Postal Communities (e.g "Aarau") in provided csv file and one PostalCommunity can contain multiple political communities (e.g. "Aadorf"). Therefore getLastUpdateOfPoliticalCommunityByPostalCommunityName can have multiple possible answers.

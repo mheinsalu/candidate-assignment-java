@@ -1,0 +1,15 @@
+/**
+ * @author Märten Heinsalu
+ */
+
+Cantons are largest administrative divisions on Switzerland.
+Most but not all cantons are divided into districts.
+Postal community / zip code can include parts of multiple cantons and districts.
+Political communities are smallest administrative divisions in Switzerland.
+
+GDE:
+a lot of the data was last updated several decades ago
+
+PLZ:
+One zip code + addition can span multiple political communities and one political community can have multiple zip code areas
+This is a list of postal communities that is additionally split by the political communities they contain. The percentage of political community contained within a postal community is also present in the table. Is the percentage based on surface area of population?

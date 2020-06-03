@@ -4,12 +4,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
+/**
+ * @author Märten Heinsalu
+ */
 @Getter
 @Builder
 public class CantonImpl implements Canton {
 
     @NonNull
     private String code;
+
     private String name;
 
     @Override
